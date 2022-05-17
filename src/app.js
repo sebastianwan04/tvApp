@@ -41,6 +41,7 @@ class TvApp {
     }
 
     renderCards = (shows) => {
+        this.viewElems.showsWrapper.innerHTML = "";
         for (const { show }
             of shows) {
             this.createShowCard(show);
@@ -52,8 +53,22 @@ class TvApp {
         const divCardBody = createDOMElem('div', 'card-body');
         const h5 = createDOMElem('h5', 'card-title', show.name);
         const btn = createDOMElem('button', 'btn btn-primary', 'Show details');
-        const p = createDOMElem('p', 'card-text', show.summary);
-        const img = createDOMElem('img', 'card-img-top', null, show.image.medium);
+
+        let p;
+        let img;
+
+        if (show.image) {
+            img = createDOMElem('img', 'card-img-top', null, show.image.medium);
+        } else {
+            img = createDOMElem('img', 'card-img-top', null, 'https://via.placeholder.com/210x295');
+        }
+
+        if (show.summary) {
+            p = createDOMElem('p', 'card-text', `${show.summary.slice(0,80)}...`);
+        } else {
+            p = createDOMElem('p', 'card-text', `There is no summary yet for ${show.name}`);
+        }
+
 
         divCard.appendChild(divCardBody);
         divCardBody.appendChild(img);
