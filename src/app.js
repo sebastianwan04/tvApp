@@ -29,11 +29,23 @@ class TvApp {
         Object.keys(this.showNameButtons).forEach(showName => {
             this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
         });
+        this.viewElems.tvButton.addEventListener('click', this.searchShow);
+        this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
+
     }
+
 
     setCurrentNameFilter = (event) => {
         this.selectedName = event.target.dataset.showName;
         this.fetchAndDisplayShows();
+    }
+
+    searchShow = (event) => {
+        if (event.type === "click" || event.key === "Enter") {
+            event.preventDefault();
+            const nameOfShow = this.viewElems.tvInput.value;
+            getShowsByKey(nameOfShow).then(shows => this.renderCardsOnList(shows));
+        }
     }
 
     fetchAndDisplayShows = () => {
