@@ -85,6 +85,8 @@ class TvApp {
         const divCardCastMembers = createDOMElem('div', 'card-cast-members')
         const h5 = createDOMElem('h5', 'card-title', show.name);
         const btn = createDOMElem('button', 'btn btn-primary', 'Show details');
+        const pGenres = createDOMElem('p', 'p-genres', "Genres: ");
+        let genres = '';
         let p;
         let img;
 
@@ -122,6 +124,14 @@ class TvApp {
             divCard.appendChild(divCardBody);
             divCardBody.appendChild(h5);
             divCardBody.appendChild(p);
+
+
+            for (const genre of show.genres) {
+                genres += genre + ", ";
+            }
+            pGenres.innerText += genres.slice(0, genres.length - 2)
+            divCardBody.appendChild(pGenres)
+
             for (const person of show._embedded.cast) {
                 let p1 = createDOMElem('p', 'cast-member', `${person.person.name} as `);
                 let p2 = createDOMElem('p', 'cast-member-role', `${person.character.name}`);
