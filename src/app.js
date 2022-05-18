@@ -61,6 +61,7 @@ class TvApp {
             this.viewElems.showPreview.appendChild(card);
             this.viewElems.showPreview.style.display = 'block'
         })
+        document.body.style.overflowY = 'hidden';
     }
 
     closeDetailsView = event => {
@@ -69,34 +70,43 @@ class TvApp {
         closeBtn.removeEventListener('click', this.closeDetailsView);
         this.viewElems.showPreview.style.display = 'none'
         this.viewElems.showPreview.innerHTML = ''
+        document.body.style.overflowY = 'unset';
+    }
 
+    removeTags = (str) => {
+        str = str.toString();
+        return str.replace(/(<([^>]+)>)/ig, '');
     }
 
     createShowCard = (show, isDetailed) => {
         const divCard = createDOMElem('div', 'card');
         const divCardBody = createDOMElem('div', 'card-body');
+        const divCardSummary = createDOMElem('div', 'card-summary');
+        const divCardCastMembers = createDOMElem('div', 'card-cast-members')
         const h5 = createDOMElem('h5', 'card-title', show.name);
         const btn = createDOMElem('button', 'btn btn-primary', 'Show details');
         let p;
         let img;
 
-
         if (show.image) {
             if (isDetailed) {
-                img = createDOMElem('div', 'card-preview-bg');
-                img.style.backgroundImage = `url('${show.image.original}')`;
+                img = createDOMElem('img', 'card-preview', null, show.image.original);
             } else {
                 img = createDOMElem('img', 'card-img-top', null, show.image.medium);
             }
         } else {
-            img = createDOMElem('img', 'card-img-top', null, 'https://via.placeholder.com/210x295');
+            if (isDetailed) {
+                img = createDOMElem('img', 'card-preview', null, 'https://via.placeholder.com/210x295');
+            } else {
+                img = createDOMElem('img', 'card-img-top', null, 'https://via.placeholder.com/210x295');
+            }
         }
 
         if (show.summary) {
             if (isDetailed) {
-                p = createDOMElem('p', 'card-text', show.summary);
+                p = createDOMElem('p', 'card-text', this.removeTags(show.summary));
             } else {
-                p = createDOMElem('p', 'card-text', `${show.summary.slice(0,80)}...`);
+                p = createDOMElem('p', 'card-text', `${this.removeTags(show.summary).slice(0,80)}...`);
             }
         } else {
             p = createDOMElem('p', 'card-text', `There is no summary yet for ${show.name}`);
@@ -105,17 +115,45 @@ class TvApp {
         btn.dataset.showId = show.id;
 
         if (isDetailed) {
+            btn.innerHTML = "Close details"
+
             btn.addEventListener('click', this.closeDetailsView);
+            divCard.appendChild(img)
+            divCard.appendChild(divCardBody);
+            divCardBody.appendChild(h5);
+            divCardBody.appendChild(p);
+            for (const person of show._embedded.cast) {
+                let p1 = createDOMElem('p', 'cast-member', `${person.person.name} as `);
+                let p2 = createDOMElem('p', 'cast-member-role', `${person.character.name}`);
+                let portrait;
+                if (person.person.image) {
+                    portrait = createDOMElem('img', 'cast-member-portrait', null, person.person.image.medium);
+                } else {
+                    portrait = createDOMElem('img', 'cast-member-portrait', null, 'https://via.placeholder.com/210x295');
+
+                }
+                let divCardCastMember = createDOMElem('div', 'card-cast-member')
+                let divCastMemberInfo = createDOMElem('div', 'cast-member-info')
+
+                divCastMemberInfo.appendChild(p1);
+                divCastMemberInfo.appendChild(p2);
+                divCardCastMember.appendChild(portrait);
+                divCardCastMember.appendChild(divCastMemberInfo);
+                divCardCastMembers.appendChild(divCardCastMember);
+            }
+            divCardBody.appendChild(divCardCastMembers);
+            divCardBody.appendChild(btn);
+
         } else {
             btn.addEventListener('click', this.openDetailsView);
+            divCard.appendChild(divCardSummary);
+            divCard.appendChild(divCardBody);
+            divCardSummary.appendChild(img);
+            divCardSummary.appendChild(h5);
+            divCardSummary.appendChild(p);
+            divCardBody.appendChild(btn);
+
         }
-
-
-        divCard.appendChild(divCardBody);
-        divCardBody.appendChild(img);
-        divCardBody.appendChild(h5);
-        divCardBody.appendChild(p);
-        divCardBody.appendChild(btn);
 
         return divCard;
     }
