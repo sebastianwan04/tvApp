@@ -62,14 +62,15 @@ class TvApp {
                     this.renderCardsOnList(shows)
 
                 })
-            if (container.lastElementChild !== this.viewElems.showsWrapper) {
-                container.removeChild(container.lastElementChild);
-            }
+
         }
     }
 
     fetchAndDisplayShows = () => {
         getShowsByKey(this.selectedName).then(shows => this.renderCardsOnList(shows));
+        if (container.lastElementChild !== this.viewElems.showsWrapper) {
+            container.removeChild(container.lastElementChild);
+        }
     }
 
     renderCardsOnList = (shows) => {
