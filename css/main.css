@@ -124,3 +124,9 @@ body {
 .card-cast-member .cast-member-info {
     margin-left: 10px;
 }
+
+.div-error-handler {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}

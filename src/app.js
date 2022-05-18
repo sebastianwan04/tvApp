@@ -29,22 +29,42 @@ class TvApp {
         Object.keys(this.showNameButtons).forEach(showName => {
             this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
         });
+
         this.viewElems.tvButton.addEventListener('click', this.searchShow);
         this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
 
     }
-
 
     setCurrentNameFilter = (event) => {
         this.selectedName = event.target.dataset.showName;
         this.fetchAndDisplayShows();
     }
 
+
     searchShow = (event) => {
+        let nameOfShow = this.viewElems.tvInput.value;
+        let divErrorHandler = createDOMElem('div', 'div-error-handler');
+        let h1Error = createDOMElem('h1', 'h1-error', 'Series not found');
+        let pError = createDOMElem('p', 'p-error', `We're terribly sorry, but show ${nameOfShow} was not found`);
+
+
         if (event.type === "click" || event.key === "Enter") {
             event.preventDefault();
-            const nameOfShow = this.viewElems.tvInput.value;
-            getShowsByKey(nameOfShow).then(shows => this.renderCardsOnList(shows));
+            getShowsByKey(nameOfShow)
+                .then((shows) => {
+                    if (shows.length === 0) {
+                        divErrorHandler.style.display = 'flex';
+                        divErrorHandler.appendChild(h1Error);
+                        divErrorHandler.appendChild(pError);
+                        this.viewElems.container.appendChild(divErrorHandler);
+
+                    }
+                    this.renderCardsOnList(shows)
+
+                })
+            if (container.lastElementChild !== this.viewElems.showsWrapper) {
+                container.removeChild(container.lastElementChild);
+            }
         }
     }
 
@@ -64,6 +84,7 @@ class TvApp {
             const card = this.createShowCard(show);
             this.viewElems.showsWrapper.appendChild(card);
         }
+
     }
 
     openDetailsView = event => {
