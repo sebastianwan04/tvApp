@@ -26,13 +26,12 @@ class TvApp {
     }
 
     setupListeners = () => {
+        this.viewElems.btnAdd.addEventListener('click', this.addNewKeyWord);
         Object.keys(this.showNameButtons).forEach(showName => {
             this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
         });
-
         this.viewElems.tvButton.addEventListener('click', this.searchShow);
         this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
-
     }
 
     setCurrentNameFilter = (event) => {
@@ -57,13 +56,40 @@ class TvApp {
                         divErrorHandler.appendChild(h1Error);
                         divErrorHandler.appendChild(pError);
                         this.viewElems.container.appendChild(divErrorHandler);
-
                     }
                     this.renderCardsOnList(shows)
-
                 })
 
         }
+    }
+
+    addNewKeyWord = (event) => {
+        event.preventDefault();
+        let keyWordsValue = Array.from(this.viewElems.dropdownMenu.children);
+        if (this.viewElems.tvInput.value !== '') {
+            const btnItem = createDOMElem('button', 'dropdown-item', this.viewElems.tvInput.value);
+            btnItem.dataset.showName = this.viewElems.tvInput.value;
+            for (const keyWord of keyWordsValue) {
+                if (keyWord !== this.viewElems.tvInput.value) {
+                    this.viewElems.dropdownMenu.prepend(btnItem);
+                }
+            }
+            this.showNameButtons[this.viewElems.tvInput.value] = btnItem;
+            const pNewKey = createDOMElem('p', 'p-key-message', 'New keyword has been added');
+            this.viewElems.dropdown.appendChild(pNewKey);
+            setTimeout(() => {
+                pNewKey.style.opacity = '0';
+            }, 500)
+            setTimeout(() => {
+                this.viewElems.dropdown.removeChild(this.viewElems.dropdown.lastElementChild)
+            }, 1000)
+
+        }
+        Object.keys(this.showNameButtons).forEach(showName => {
+            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
+        });
+        this.viewElems.tvInput.value = '';
+
     }
 
     fetchAndDisplayShows = () => {
@@ -120,9 +146,24 @@ class TvApp {
         const h5 = createDOMElem('h5', 'card-title', show.name);
         const btn = createDOMElem('button', 'btn btn-primary', 'Show details');
         const pGenres = createDOMElem('p', 'p-genres', "Genres: ");
+        let img2 = createDOMElem('img', 'fav-icon', null, './img/star_outline.png');
         let genres = '';
-        let p;
-        let img;
+        let p, img;
+
+        divCard.dataset.isFavourite = 'false';
+
+        img2.addEventListener('click', (event) => {
+            if (divCard.dataset.isFavourite === 'true') {
+                img2.src = './img/star_outline.png';
+                divCard.dataset.isFavourite = 'false';
+            } else {
+                img2.src = './img/star.png'
+                divCard.dataset.isFavourite = 'true';
+                //this.favouriteShowsList.push(event.path[2]);
+                //localStorage.setItem('favouriteShow', this.favouriteShowsList);
+            }
+        })
+
 
         if (show.image) {
             if (isDetailed) {
@@ -196,6 +237,7 @@ class TvApp {
             divCardSummary.appendChild(h5);
             divCardSummary.appendChild(p);
             divCardBody.appendChild(btn);
+            divCardBody.appendChild(img2);
 
         }
 

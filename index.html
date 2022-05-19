@@ -12,11 +12,11 @@
 <body>
     <div class="container" id="container">
         <div class="search-bar">
-            <div class="dropdown">
+            <div class="dropdown" id="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Most popular keywords
         </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu" id="dropdownMenu" aria-labelledby="dropdownMenuButton">
                     <button class="dropdown-item" data-show-name="harry">harry</button>
                     <button class="dropdown-item" data-show-name="queen">queen</button>
                     <button class="dropdown-item" data-show-name="dog">dog</button>
@@ -31,6 +31,10 @@
                         <img src="./img/search.png" alt="">
                     </button>
                 </div>
+                <button class="btn btn-primary btn-add" id="btnAdd">
+                    Add new keyword
+                    <img src="./img/plus.png" alt="">
+                </button>
             </form>
         </div>
 
