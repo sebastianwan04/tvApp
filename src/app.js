@@ -5,6 +5,7 @@ class TvApp {
     constructor() {
         this.viewElems = {};
         this.showNameButtons = {};
+        this.favouriteShowsList = [];
         this.selectedName = "harry";
         this.initializeApp();
     }
@@ -32,6 +33,7 @@ class TvApp {
         });
         this.viewElems.tvButton.addEventListener('click', this.searchShow);
         this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
+        this.viewElems, btnFav.addEventListener('click', this.getfavouriteShowsList)
     }
 
     setCurrentNameFilter = (event) => {
@@ -56,10 +58,14 @@ class TvApp {
                         divErrorHandler.appendChild(h1Error);
                         divErrorHandler.appendChild(pError);
                         this.viewElems.container.appendChild(divErrorHandler);
+
                     }
+
                     this.renderCardsOnList(shows)
                 })
-
+            if (container.lastElementChild !== this.viewElems.showsWrapper) {
+                container.removeChild(container.lastElementChild);
+            }
         }
     }
 
@@ -133,6 +139,30 @@ class TvApp {
         document.body.style.overflowY = 'unset';
     }
 
+    getfavouriteShowsList = () => {
+        this.viewElems.showsWrapper.innerHTML = ''
+        if (container.lastElementChild !== this.viewElems.showsWrapper) {
+            container.removeChild(container.lastElementChild);
+        }
+        let favouriteShowsList;
+        if (localStorage.getItem('favouriteShows')) {
+            favouriteShowsList = JSON.parse(localStorage.getItem('favouriteShows'));
+            for (let show of favouriteShowsList) {
+                let element = this.createShowCard(show);
+                this.viewElems.showsWrapper.appendChild(element);
+            }
+        } else {
+            favouriteShowsList = [];
+            let divErrorHandler = createDOMElem('div', 'div-error-handler');
+            let h1Error = createDOMElem('h1', 'h1-error', 'No series has been added');
+            let pError = createDOMElem('p', 'p-error', `We're terribly sorry, no series has been added to favourites`);
+            divErrorHandler.style.display = 'flex';
+            divErrorHandler.appendChild(h1Error);
+            divErrorHandler.appendChild(pError);
+            this.viewElems.container.appendChild(divErrorHandler);
+        }
+    }
+
     removeTags = (str) => {
         str = str.toString();
         return str.replace(/(<([^>]+)>)/ig, '');
@@ -152,15 +182,18 @@ class TvApp {
 
         divCard.dataset.isFavourite = 'false';
 
-        img2.addEventListener('click', (event) => {
+
+        img2.addEventListener('click', () => {
             if (divCard.dataset.isFavourite === 'true') {
                 img2.src = './img/star_outline.png';
                 divCard.dataset.isFavourite = 'false';
+                show['isFavourite'] = 'false'
             } else {
                 img2.src = './img/star.png'
                 divCard.dataset.isFavourite = 'true';
-                //this.favouriteShowsList.push(event.path[2]);
-                //localStorage.setItem('favouriteShow', this.favouriteShowsList);
+                show['isFavourite'] = 'true'
+                this.favouriteShowsList.push(show);
+                localStorage.setItem('favouriteShows', JSON.stringify(this.favouriteShowsList));
             }
         })
 

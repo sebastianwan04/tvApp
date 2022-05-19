@@ -2,6 +2,22 @@ body {
     margin: 50px 0;
 }
 
+.btn-favourite {
+    background-color: #FFC107;
+    margin-left: 10px;
+}
+
+.btn-favourite:hover {
+    background-color: #d29e03;
+    margin-left: 10px;
+}
+
+.btn-favourite img {
+    vertical-align: unset;
+    display: flex;
+    height: 24px;
+}
+
 .p-key-message {
     transition: 0.5s;
 }

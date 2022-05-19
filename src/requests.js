@@ -6,5 +6,8 @@ export const getShowsByKey = (key) => {
 
 export const getShowsById = (id) => {
     return fetch(`https://api.tvmaze.com/shows/${id}?embed=cast`)
-        .then(resp => resp.json());
+        .then((resp) => {
+            resp.json()
+            resp['isFavourite'] = 'false'
+        });
 }
