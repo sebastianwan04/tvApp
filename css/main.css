@@ -83,8 +83,6 @@ body {
 }
 
 .card-body img:hover {
-    width: 36px;
-    height: 36px;
     cursor: pointer;
 }
 
@@ -137,6 +135,24 @@ body {
     overflow-x: hidden;
 }
 
+.show-preview .card-body {
+    display: block;
+}
+
+.card-preview-header img {
+    width: 36px;
+    height: 36px
+}
+
+.show-preview .card-body img {
+    display: block;
+}
+
+.card-preview-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .card-preview {
     height: 90%;
     padding: 25px;
@@ -166,6 +182,7 @@ body {
 
 .card-cast-member img {
     width: 30%;
+    height: unset;
 }
 
 .card-cast-member .cast-member-info {
