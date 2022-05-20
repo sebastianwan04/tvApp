@@ -22,8 +22,8 @@ class TvApp {
     initializeApp = () => {
         this.connectDOMElement();
         this.setupListeners();
-        this.fetchAndDisplayShows();
         this.renderKeyWord();
+        this.fetchAndDisplayShows();
     }
 
     connectDOMElement = () => {
@@ -119,8 +119,14 @@ class TvApp {
     renderKeyWord = () => {
         for (const keyWord of this.keyWordsList) {
             const btnItem = createDOMElem('button', 'dropdown-item', keyWord);
+            btnItem.dataset.showName = keyWord;
             this.viewElems.dropdownMenu.prepend(btnItem);
+            this.showNameButtons[keyWord] = btnItem
         }
+
+        Object.keys(this.showNameButtons).forEach(showName => {
+            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
+        });
     }
 
     fetchAndDisplayShows = () => {
