@@ -10,6 +10,7 @@ class TvApp {
         } else {
             this.favouriteShowsList = [];
         }
+
         this.selectedName = "harry";
         this.initializeApp();
     }
@@ -64,6 +65,7 @@ class TvApp {
                         divErrorHandler.style.display = 'flex';
                         divErrorHandler.appendChild(h1Error);
                         divErrorHandler.appendChild(pError);
+
                         this.viewElems.container.appendChild(divErrorHandler);
 
                     }
@@ -82,15 +84,16 @@ class TvApp {
         let keyWordsValue = Array.from(this.viewElems.dropdownMenu.children);
         if (this.viewElems.tvInput.value !== '') {
             const btnItem = createDOMElem('button', 'dropdown-item', this.viewElems.tvInput.value);
+
             btnItem.dataset.showName = this.viewElems.tvInput.value;
-            for (const keyWord of keyWordsValue) {
-                if (keyWord !== this.viewElems.tvInput.value) {
-                    this.viewElems.dropdownMenu.prepend(btnItem);
-                }
-            }
+
+            this.viewElems.dropdownMenu.prepend(btnItem);
             this.showNameButtons[this.viewElems.tvInput.value] = btnItem;
+
             const pNewKey = createDOMElem('p', 'p-key-message', 'New keyword has been added');
+
             this.viewElems.dropdown.appendChild(pNewKey);
+
             setTimeout(() => {
                 pNewKey.style.opacity = '0';
             }, 500)
@@ -111,6 +114,7 @@ class TvApp {
             shows.forEach(index => {
                 index.show['isFavourite'] = false;
             })
+
             this.renderCardsOnList(shows)
         });
         if (container.lastElementChild !== this.viewElems.showsWrapper) {
@@ -127,6 +131,7 @@ class TvApp {
         for (const { show }
             of shows) {
             const card = this.createShowCard(show);
+
             this.viewElems.showsWrapper.appendChild(card);
         }
 
@@ -134,37 +139,64 @@ class TvApp {
 
     openDetailsView = event => {
         const { showId } = event.target.dataset;
+
         getShowsById(showId).then(show => {
             const card = this.createShowCard(show, true);
+
             this.viewElems.showPreview.appendChild(card);
             this.viewElems.showPreview.style.display = 'block'
         })
+
         document.body.style.overflowY = 'hidden';
     }
 
     closeDetailsView = event => {
         const { showId } = event.target.dataset;
         const closeBtn = document.querySelector(`[id="showPreview"] [data-show-id="${showId}"]`);
+
         closeBtn.removeEventListener('click', this.closeDetailsView);
+
         this.viewElems.showPreview.style.display = 'none'
         this.viewElems.showPreview.innerHTML = ''
         document.body.style.overflowY = 'unset';
     }
+
+    setFavouriteShow = (event) => {
+        const favId = event.target.dataset.showId;
+
+        if (this.favouriteShowsList.indexOf(favId) == -1) {
+            this.favouriteShowsList.push(favId);
+            event.target.style.backgroundImage = 'url("./img/star.png")';
+        } else {
+            this.favouriteShowsList.splice(this.favouriteShowsList.indexOf(favId), 1);
+            event.target.style.backgroundImage = 'url("./img/star_outline.png")';
+        }
+
+        localStorage.setItem('favouriteShows', JSON.stringify(this.favouriteShowsList));
+    };
+
 
     getfavouriteShowsList = () => {
         this.viewElems.showsWrapper.innerHTML = ''
         if (container.lastElementChild !== this.viewElems.showsWrapper) {
             container.removeChild(container.lastElementChild);
         }
+
         if (this.favouriteShowsList.length > 0) {
-            for (let show of this.favouriteShowsList) {
-                let element = this.createShowCard(show);
-                this.viewElems.showsWrapper.appendChild(element);
+            this.viewElems.showsWrapper.innerHTML = "";
+
+            for (const favourite of this.favouriteShowsList) {
+                getShowsById(favourite).then(show => {
+                    const card = this.createShowCard(show);
+
+                    this.viewElems.showsWrapper.appendChild(card);
+                });
             }
         } else {
             let divErrorHandler = createDOMElem('div', 'div-error-handler');
             let h1Error = createDOMElem('h1', 'h1-error', 'No series has been added');
             let pError = createDOMElem('p', 'p-error', `We're terribly sorry, no series has been added to favourites`);
+
             divErrorHandler.style.display = 'flex';
             divErrorHandler.appendChild(h1Error);
             divErrorHandler.appendChild(pError);
@@ -188,33 +220,19 @@ class TvApp {
         const h5 = createDOMElem('h5', 'card-title', show.name);
         const btn = createDOMElem('button', 'btn btn-primary', 'Show details');
         const pGenres = createDOMElem('p', 'p-genres', "Genres: ");
-        let img2 = createDOMElem('img', 'fav-icon', null, './img/star_outline.png');;
+        let btnFav = createDOMElem('button', 'fav-icon');
         let genres = '';
         let p, img;
 
-        if (show.isFavourite === true) {
-            img2.src = './img/star.png'
+
+        if (this.favouriteShowsList.indexOf(show.id.toString()) !== -1) {
+            btnFav.style.backgroundImage = 'url("./img/star.png")';
         } else {
-            img2.src = './img/star_outline.png';
+            btnFav.style.backgroundImage = 'url("./img/star_outline.png")';
         }
 
-        img2.addEventListener('click', () => {
-            if (show.isFavourite === true) {
-                img2.src = './img/star_outline.png';
-                show.isFavourite = false;
-                let elIndex = this.favouriteShowsList.indexOf(show)
-                if (elIndex > -1) {
-                    this.favouriteShowsList.splice(elIndex, 1);
-                }
-                localStorage.setItem('favouriteShows', JSON.stringify(this.favouriteShowsList));
-            } else {
-                console.log(show.id)
-                show.isFavourite = true;
-                img2.src = './img/star.png'
-                this.favouriteShowsList.push(show);
-                localStorage.setItem('favouriteShows', JSON.stringify(this.favouriteShowsList));
-            }
-        })
+
+        btnFav.addEventListener('click', this.setFavouriteShow);
 
         if (show.image) {
             if (isDetailed) {
@@ -241,6 +259,7 @@ class TvApp {
         }
 
         btn.dataset.showId = show.id;
+        btnFav.dataset.showId = show.id;
 
         if (isDetailed) {
             btn.innerHTML = "Close details"
@@ -249,7 +268,7 @@ class TvApp {
             divCard.appendChild(img)
             divCard.appendChild(divCardBody);
             divCardHeader.appendChild(h5);
-            divCardHeader.appendChild(img2)
+            divCardHeader.appendChild(btnFav)
             divCardBody.appendChild(divCardHeader)
             divCardBody.appendChild(p);
 
@@ -264,12 +283,14 @@ class TvApp {
                 let p1 = createDOMElem('p', 'cast-member', `${person.person.name} as `);
                 let p2 = createDOMElem('p', 'cast-member-role', `${person.character.name}`);
                 let portrait;
+
                 if (person.person.image) {
                     portrait = createDOMElem('img', 'cast-member-portrait', null, person.person.image.medium);
                 } else {
                     portrait = createDOMElem('img', 'cast-member-portrait', null, 'https://via.placeholder.com/210x295');
 
                 }
+
                 let divCardCastMember = createDOMElem('div', 'card-cast-member')
                 let divCastMemberInfo = createDOMElem('div', 'cast-member-info')
 
@@ -290,7 +311,7 @@ class TvApp {
             divCardSummary.appendChild(h5);
             divCardSummary.appendChild(p);
             divCardBody.appendChild(btn);
-            divCardBody.appendChild(img2);
+            divCardBody.appendChild(btnFav);
 
         }
 

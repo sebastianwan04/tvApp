@@ -77,13 +77,13 @@ body {
     justify-content: space-between;
 }
 
-.card-body img {
+button.fav-icon {
     width: 36px;
-    height: 36px;
-}
-
-.card-body img:hover {
-    cursor: pointer;
+    border: none;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: 95%;
+    outline: none;
 }
 
 .btn-add {
@@ -139,11 +139,6 @@ body {
     display: block;
 }
 
-.card-preview-header img {
-    width: 36px;
-    height: 36px
-}
-
 .show-preview .card-body img {
     display: block;
 }
@@ -151,6 +146,13 @@ body {
 .card-preview-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.card-preview-header .fav-icon {
+    height: 36px;
+    left: unset;
+    margin-bottom: unset;
 }
 
 .card-preview {
