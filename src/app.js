@@ -44,7 +44,7 @@ class TvApp {
 
         this.viewElems.tvButton.addEventListener('click', this.searchShow);
         this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
-        this.viewElems, btnFav.addEventListener('click', this.getfavouriteShowsList)
+        this.viewElems, btnFav.addEventListener('click', this.getfavouriteShowsList);
 
 
     }
@@ -75,7 +75,7 @@ class TvApp {
 
                     }
 
-                    this.renderCardsOnList(shows)
+                    this.renderCardsOnList(shows);
                 })
             if (container.lastElementChild !== this.viewElems.showsWrapper) {
                 container.removeChild(container.lastElementChild);
@@ -105,7 +105,7 @@ class TvApp {
                 pNewKey.style.opacity = '0';
             }, 500)
             setTimeout(() => {
-                this.viewElems.dropdown.removeChild(this.viewElems.dropdown.lastElementChild)
+                this.viewElems.dropdown.removeChild(this.viewElems.dropdown.lastElementChild);
             }, 1000)
 
         }
@@ -127,9 +127,9 @@ class TvApp {
         getShowsByKey(this.selectedName).then(shows => {
             shows.forEach(index => {
                 index.show['isFavourite'] = false;
-            })
+            });
 
-            this.renderCardsOnList(shows)
+            this.renderCardsOnList(shows);
         });
         if (container.lastElementChild !== this.viewElems.showsWrapper) {
             container.removeChild(container.lastElementChild);
@@ -139,7 +139,7 @@ class TvApp {
     renderCardsOnList = (shows) => {
         Array.from(
             document.querySelectorAll('[data-show-id]')
-        ).forEach(btn => btn.removeEventListener('click', this.removeEventListener))
+        ).forEach(btn => btn.removeEventListener('click', this.removeEventListener));
 
         this.viewElems.showsWrapper.innerHTML = "";
         for (const { show }
@@ -158,7 +158,7 @@ class TvApp {
             const card = this.createShowCard(show, true);
 
             this.viewElems.showPreview.appendChild(card);
-            this.viewElems.showPreview.style.display = 'block'
+            this.viewElems.showPreview.style.display = 'block';
         })
 
         document.body.style.overflowY = 'hidden';
@@ -170,8 +170,8 @@ class TvApp {
 
         closeBtn.removeEventListener('click', this.closeDetailsView);
 
-        this.viewElems.showPreview.style.display = 'none'
-        this.viewElems.showPreview.innerHTML = ''
+        this.viewElems.showPreview.style.display = 'none';
+        this.viewElems.showPreview.innerHTML = '';
         document.body.style.overflowY = 'unset';
     }
 
@@ -191,7 +191,7 @@ class TvApp {
 
 
     getfavouriteShowsList = () => {
-        this.viewElems.showsWrapper.innerHTML = ''
+        this.viewElems.showsWrapper.innerHTML = '';
         if (container.lastElementChild !== this.viewElems.showsWrapper) {
             container.removeChild(container.lastElementChild);
         }
@@ -276,22 +276,22 @@ class TvApp {
         btnFav.dataset.showId = show.id;
 
         if (isDetailed) {
-            btn.innerHTML = "Close details"
+            btn.innerHTML = "Close details";
 
             btn.addEventListener('click', this.closeDetailsView);
-            divCard.appendChild(img)
+            divCard.appendChild(img);
             divCard.appendChild(divCardBody);
             divCardHeader.appendChild(h5);
             divCardHeader.appendChild(btnFav)
-            divCardBody.appendChild(divCardHeader)
+            divCardBody.appendChild(divCardHeader);
             divCardBody.appendChild(p);
 
 
             for (const genre of show.genres) {
                 genres += genre + ", ";
             }
-            pGenres.innerText += genres.slice(0, genres.length - 2)
-            divCardBody.appendChild(pGenres)
+            pGenres.innerText += genres.slice(0, genres.length - 2);
+            divCardBody.appendChild(pGenres);
 
             for (const person of show._embedded.cast) {
                 let p1 = createDOMElem('p', 'cast-member', `${person.person.name} as `);
@@ -305,8 +305,8 @@ class TvApp {
 
                 }
 
-                let divCardCastMember = createDOMElem('div', 'card-cast-member')
-                let divCastMemberInfo = createDOMElem('div', 'cast-member-info')
+                let divCardCastMember = createDOMElem('div', 'card-cast-member');
+                let divCastMemberInfo = createDOMElem('div', 'cast-member-info');
 
                 divCastMemberInfo.appendChild(p1);
                 divCastMemberInfo.appendChild(p2);
