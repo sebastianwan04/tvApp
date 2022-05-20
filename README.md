@@ -1,2 +1,2 @@
 # tvApp
-To jest aplikacja zawierająca seriale TV stworzona na potrzeby praktyk z web-devu Madecki.pl 2022
+Aplikacja zawierająca seriale TV stworzona w czasie trwania praktyk z web-devu u Madecki.pl 2022
