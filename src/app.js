@@ -10,7 +10,11 @@ class TvApp {
         } else {
             this.favouriteShowsList = [];
         }
-
+        if (localStorage.getItem('keyWords')) {
+            this.keyWordsList = JSON.parse(localStorage.getItem('keyWords'));
+        } else {
+            this.keyWordsList = [];
+        }
         this.selectedName = "harry";
         this.initializeApp();
     }
@@ -19,6 +23,7 @@ class TvApp {
         this.connectDOMElement();
         this.setupListeners();
         this.fetchAndDisplayShows();
+        this.renderKeyWord();
     }
 
     connectDOMElement = () => {
@@ -89,6 +94,8 @@ class TvApp {
 
             this.viewElems.dropdownMenu.prepend(btnItem);
             this.showNameButtons[this.viewElems.tvInput.value] = btnItem;
+            this.keyWordsList.push(this.viewElems.tvInput.value);
+            localStorage.setItem('keyWords', JSON.stringify(this.keyWordsList));
 
             const pNewKey = createDOMElem('p', 'p-key-message', 'New keyword has been added');
 
@@ -107,6 +114,13 @@ class TvApp {
         });
         this.viewElems.tvInput.value = '';
 
+    }
+
+    renderKeyWord = () => {
+        for (const keyWord of this.keyWordsList) {
+            const btnItem = createDOMElem('button', 'dropdown-item', keyWord);
+            this.viewElems.dropdownMenu.prepend(btnItem);
+        }
     }
 
     fetchAndDisplayShows = () => {
