@@ -38,10 +38,7 @@ class TvApp {
 
     setupListeners = () => {
         this.viewElems.btnAdd.addEventListener('click', this.addNewKeyWord);
-        Object.keys(this.showNameButtons).forEach(showName => {
-            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
-        });
-
+        this.getKeyWordButtons();
         this.viewElems.tvButton.addEventListener('click', this.searchShow);
         this.viewElems.tvInput.addEventListener('keydown', this.searchShow);
         this.viewElems, btnFav.addEventListener('click', this.getfavouriteShowsList);
@@ -84,16 +81,25 @@ class TvApp {
         }
     }
 
+    getKeyWordButtons = () => {
+        Object.keys(this.showNameButtons).forEach(showName => {
+            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
+        });
+    }
+
+    generateKeyWordsList = (values) => {
+        const btnItem = createDOMElem('button', 'dropdown-item', values);
+        this.viewElems.dropdownMenu.prepend(btnItem);
+        btnItem.dataset.showName = values;
+        this.showNameButtons[values] = btnItem;
+
+    }
+
     addNewKeyWord = (event) => {
         event.preventDefault();
         let keyWordsValue = Array.from(this.viewElems.dropdownMenu.children);
         if (this.viewElems.tvInput.value !== '') {
-            const btnItem = createDOMElem('button', 'dropdown-item', this.viewElems.tvInput.value);
-
-            btnItem.dataset.showName = this.viewElems.tvInput.value;
-
-            this.viewElems.dropdownMenu.prepend(btnItem);
-            this.showNameButtons[this.viewElems.tvInput.value] = btnItem;
+            this.generateKeyWordsList(this.viewElems.tvInput.value)
             this.keyWordsList.push(this.viewElems.tvInput.value);
             localStorage.setItem('keyWords', JSON.stringify(this.keyWordsList));
 
@@ -109,24 +115,16 @@ class TvApp {
             }, 1000)
 
         }
-        Object.keys(this.showNameButtons).forEach(showName => {
-            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
-        });
+        this.getKeyWordButtons();
         this.viewElems.tvInput.value = '';
 
     }
 
     renderKeyWord = () => {
         for (const keyWord of this.keyWordsList) {
-            const btnItem = createDOMElem('button', 'dropdown-item', keyWord);
-            btnItem.dataset.showName = keyWord;
-            this.viewElems.dropdownMenu.prepend(btnItem);
-            this.showNameButtons[keyWord] = btnItem
+            this.generateKeyWordsList(keyWord)
         }
-
-        Object.keys(this.showNameButtons).forEach(showName => {
-            this.showNameButtons[showName].addEventListener('click', this.setCurrentNameFilter);
-        });
+        this.getKeyWordButtons();
     }
 
     fetchAndDisplayShows = () => {
